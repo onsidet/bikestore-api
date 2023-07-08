@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStoresApi", "BikeStoresApi.csproj", "{62B21058-C577-4D56-92E0-B7096D97924D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BikeStoresApi", "BikeStoresApi\BikeStoresApi.csproj", "{CE5A0DB3-3A87-4F19-AA8F-56481F74B206}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{62B21058-C577-4D56-92E0-B7096D97924D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62B21058-C577-4D56-92E0-B7096D97924D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62B21058-C577-4D56-92E0-B7096D97924D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62B21058-C577-4D56-92E0-B7096D97924D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE5A0DB3-3A87-4F19-AA8F-56481F74B206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE5A0DB3-3A87-4F19-AA8F-56481F74B206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE5A0DB3-3A87-4F19-AA8F-56481F74B206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE5A0DB3-3A87-4F19-AA8F-56481F74B206}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3E079B6E-0CA4-4C2F-9A06-40735F12E4B4}
+		SolutionGuid = {2CE96384-D0FD-4901-A99A-A9292AEE6CD0}
 	EndGlobalSection
 EndGlobal
