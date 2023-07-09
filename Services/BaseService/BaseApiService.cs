@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using BikeStoresApi.Data;
 
-namespace BikeStoresApi.Services
+namespace BikeStoresApi.Services.BaseService
 {
-    public class BaseApiService
+    public class BaseService
     {
         protected readonly IServiceProvider _provider;
         protected readonly DataContext _db;
         protected readonly IMapper _mapper;
 
-        public BaseApiService(IServiceProvider provider)
+        public BaseService(IServiceProvider provider)
         {
             _provider = provider;
             _db = provider.GetService<DataContext>();

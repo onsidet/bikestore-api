@@ -1,14 +1,9 @@
 ﻿using BikeStoresApi.Dtos;
-using BikeStoresApi.Models;
+using BikeStoresApi.Services.BaseService;
 
 namespace BikeStoresApi.Services.ProductService
 {
-    public interface IProductService
+    public interface IProductService : IBaseApiService<GetProductDto, AddProductDto, UpdateProductDto>
     {
-        Task<ServiceResponse<List<GetProductDto>>> GetProducts();
-        Task<ServiceResponse<GetProductDto>> GetProductById(long id);
-        Task<ServiceResponse<List<GetProductDto>>> AddProduct(AddProductDto newCategory);
-        Task<ServiceResponse<GetProductDto>> UpdateProduct(UpdateProductDto updateCategory);
-        Task<ServiceResponse<List<GetProductDto>>> DeleteProduct(long id);
     }
 }

@@ -5,21 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BikeStoresApi.Controllers
 {
-    public class ProductController : BaseApiController<IProductService>
+    public class ProductController : BaseController<IProductService>
     {
         public ProductController(IServiceProvider provider) : base(provider)
         {
         }
 
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> Get()
+        [HttpGet()]
+        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> ListsAsync()
         {
-            return Ok(await _service.GetProducts());
+            return Ok(await _service.ListsAsync());
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<GetProductDto>>> GetById(long id)
+        public async Task<ActionResult<ServiceResponse<GetProductDto>>> FindAsync(long id)
         {
-            var response = await _service.GetProductById(id);
+            var response = await _service.FindAsync(id);
             if (response.Data == null)
             {
                 return NotFound(response);
@@ -27,14 +27,14 @@ namespace BikeStoresApi.Controllers
             return Ok(response);
         }
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<GetProductDto>>> AddCategory(AddProductDto newCategory)
+        public async Task<ActionResult<ServiceResponse<GetProductDto>>> AddAsync(AddProductDto newCategory)
         {
-            return Ok(await _service.AddProduct(newCategory));
+            return Ok(await _service.AddAsync(newCategory));
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServiceResponse<GetProductDto>>> UpdateCategory(UpdateProductDto updateCategory)
+        public async Task<ActionResult<ServiceResponse<GetProductDto>>> UpdateAsync(UpdateProductDto updateCategory)
         {
-            var response = await _service.UpdateProduct(updateCategory);
+            var response = await _service.UpdateAsync(updateCategory);
             if (response.Data == null)
             {
                 return NotFound(response);
@@ -42,9 +42,9 @@ namespace BikeStoresApi.Controllers
             return Ok(response);
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> DeleteCategory(long id)
+        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> DeleteAsync(long id)
         {
-            var response = await _service.DeleteProduct(id);
+            var response = await _service.DeleteAsync(id);
             if (response.Data == null)
             {
                 return NotFound(response);

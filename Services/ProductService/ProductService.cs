@@ -1,5 +1,6 @@
 ﻿using BikeStoresApi.Dtos;
 using BikeStoresApi.Models;
+using BikeStoresApi.Services.BaseService;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeStoresApi.Services.ProductService
@@ -9,91 +10,42 @@ namespace BikeStoresApi.Services.ProductService
         public ProductService(IServiceProvider provider) : base(provider)
         {
         }
-
-        public async Task<ServiceResponse<List<GetProductDto>>> AddProduct(AddProductDto newProduct)
+        public async Task<ServiceResponse<List<GetProductDto>>> ListsAsync()
         {
             var serviceResponse = new ServiceResponse<List<GetProductDto>>();
-            try
-            {
-                var product = _mapper.Map<Product>(newProduct);
-                var category = await _db.Categories.FirstOrDefaultAsync(x => x.Id == product.CategoryId);
-                if (category == null)
-                {
-                    throw new BadHttpRequestException($"Cannot find categoryId: {product.CategoryId}", 400);
-                }
-                _db.Products.Add(product);
-                await _db.SaveChangesAsync();
-                var lists = await GetProducts();
-                serviceResponse.Data = lists.Data;
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = ex.Message;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<List<GetProductDto>>> DeleteProduct(long id)
-        {
-            var serviceResponse = new ServiceResponse<List<GetProductDto>>();
-            try
-            {
-                var product =
-                    await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
-                if (product == null)
-                {
-                    throw new Exception($"Category cannot find id : {id}");
-                }
-                _db.Products.Remove(product);
-
-                await _db.SaveChangesAsync();
-                var lists = await GetProducts();
-                serviceResponse.Data = lists.Data;
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = ex.Message;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<List<GetProductDto>>> GetProducts()
-        {
-            var serviceResponse = new ServiceResponse<List<GetProductDto>>();
-            var dbProducts = await _db.Products.ToListAsync();
+            var entries = await _db.Products.ToListAsync();
             var categories = await _db.Categories.ToListAsync();
-            serviceResponse.Data = dbProducts.Select(c => new GetProductDto
+            serviceResponse.Data = entries.Select(x => new GetProductDto
             {
-                Id = c.Id,
-                Name = c.Name,
-                ModelYear = c.ModelYear,
-                ListPrice = c.ListPrice,
-                CategoryId = c.CategoryId,
-                CategoryName = categories.FirstOrDefault(x => x.Id == c.CategoryId).Name,
+                Id = x.Id,
+                Name = x.Name,
+                ModelYear = x.ModelYear,
+                ListPrice = x.ListPrice,
+                CategoryId = x.CategoryId,
+                CategoryName = categories.FirstOrDefault(c => c.Id == x.CategoryId).Name,
             }).ToList();
             return serviceResponse;
         }
-        public async Task<ServiceResponse<GetProductDto>> GetProductById(long id)
+
+        public async Task<ServiceResponse<GetProductDto>> FindAsync(long id)
         {
             var serviceResponse = new ServiceResponse<GetProductDto>();
             try
             {
-                var dbProduct = await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
+                var entry = await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
                 var categories = await _db.Categories.ToListAsync();
-                if (dbProduct == null)
+                if (entry == null)
                 {
                     throw new Exception($"Product cannot find id: {id}");
                 }
                 serviceResponse.Data = new GetProductDto
                 {
-                    Id = dbProduct.Id,
-                    Name = dbProduct.Name,
-                    ModelYear = dbProduct.ModelYear,
-                    ListPrice = dbProduct.ListPrice,
-                    CategoryId = dbProduct.CategoryId,
-                    CategoryName = categories.FirstOrDefault(x => x.Id == dbProduct.CategoryId).Name,
+                    Id = entry.Id,
+                    Name = entry.Name,
+                    ModelYear = entry.ModelYear,
+                    ListPrice = entry.ListPrice,
+                    CategoryId = entry.CategoryId,
+                    CategoryName = categories.FirstOrDefault(x => x.Id == entry.CategoryId).Name,
                 };
             }
             catch (Exception ex)
@@ -104,27 +56,50 @@ namespace BikeStoresApi.Services.ProductService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<GetProductDto>> UpdateProduct
-            (UpdateProductDto update)
+        public async Task<ServiceResponse<List<GetProductDto>>> AddAsync(AddProductDto model)
+        {
+            var serviceResponse = new ServiceResponse<List<GetProductDto>>();
+            try
+            {
+                var entry = _mapper.Map<Product>(model);
+                var category = await _db.Categories.FirstOrDefaultAsync(x => x.Id == entry.CategoryId);
+                if (category == null)
+                {
+                    throw new BadHttpRequestException($"Cannot find categoryId: {entry.CategoryId}", 400);
+                }
+                _db.Products.Add(entry);
+                await _db.SaveChangesAsync();
+                var lists = await ListsAsync();
+                serviceResponse.Data = lists.Data;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetProductDto>> UpdateAsync(UpdateProductDto model)
         {
             var serviceResponse = new ServiceResponse<GetProductDto>();
             try
             {
-                var product =
-                   await _db.Products.FirstOrDefaultAsync(c => c.Id == update.Id);
-                if (product == null)
+                var entry =
+                   await _db.Products.FirstOrDefaultAsync(c => c.Id == model.Id);
+                if (entry == null)
                 {
-                    throw new Exception($"Product cannot find id : {update.Id}");
+                    throw new Exception($"Product cannot find id : {model.Id}");
                 }
 
-                product.Name = update.Name;
-                product.ListPrice = update.ListPrice;
-                product.ModelYear = update.ModelYear;
-                product.CategoryId = update.CategoryId;
+                entry.Name = model.Name;
+                entry.ListPrice = model.ListPrice;
+                entry.ModelYear = model.ModelYear;
+                entry.CategoryId = model.CategoryId;
 
                 await _db.SaveChangesAsync();
 
-                serviceResponse.Data = _mapper.Map<GetProductDto>(product);
+                serviceResponse.Data = _mapper.Map<GetProductDto>(entry);
             }
             catch (Exception ex)
             {
@@ -132,6 +107,31 @@ namespace BikeStoresApi.Services.ProductService
                 serviceResponse.Message = ex.Message;
             }
 
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<GetProductDto>>> DeleteAsync(long id)
+        {
+            var serviceResponse = new ServiceResponse<List<GetProductDto>>();
+            try
+            {
+                var entry =
+                    await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
+                if (entry == null)
+                {
+                    throw new Exception($"Category cannot find id : {id}");
+                }
+                _db.Products.Remove(entry);
+
+                await _db.SaveChangesAsync();
+                var lists = await ListsAsync();
+                serviceResponse.Data = lists.Data;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
             return serviceResponse;
         }
     }
