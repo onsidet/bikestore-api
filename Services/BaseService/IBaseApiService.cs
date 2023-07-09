@@ -2,7 +2,7 @@
 
 namespace BikeStoresApi.Services.BaseService
 {
-    public interface IBaseService<TResponse, TAdd, TUpdate>
+    public interface IBaseApiService<TResponse, TAdd, TUpdate>
     {
         Task<ServiceResponse<List<TResponse>>> ListsAsync();
         Task<ServiceResponse<TResponse>> FindAsync(long id);

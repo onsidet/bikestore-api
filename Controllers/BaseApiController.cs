@@ -6,14 +6,14 @@ namespace BikeStoresApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BaseController<TService> : ControllerBase where TService : class
+    public class BaseApiController<TService> : ControllerBase where TService : class
     {
         protected readonly IServiceProvider _provider;
         protected readonly DataContext _db;
         protected readonly TService _service;
         protected readonly IMapper _mapper;
 
-        public BaseController(IServiceProvider provider)
+        public BaseApiController(IServiceProvider provider)
         {
             _provider = provider;
             _db = provider.GetService<DataContext>();

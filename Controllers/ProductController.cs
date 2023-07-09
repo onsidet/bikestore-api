@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BikeStoresApi.Controllers
 {
-    public class ProductController : BaseController<IProductService>
+    public class ProductController : BaseApiController<IProductService>
     {
         public ProductController(IServiceProvider provider) : base(provider)
         {

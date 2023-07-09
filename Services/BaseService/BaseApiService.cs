@@ -3,13 +3,13 @@ using BikeStoresApi.Data;
 
 namespace BikeStoresApi.Services.BaseService
 {
-    public class BaseService
+    public class BaseApiService
     {
         protected readonly IServiceProvider _provider;
         protected readonly DataContext _db;
         protected readonly IMapper _mapper;
 
-        public BaseService(IServiceProvider provider)
+        public BaseApiService(IServiceProvider provider)
         {
             _provider = provider;
             _db = provider.GetService<DataContext>();
