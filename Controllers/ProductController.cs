@@ -5,24 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BikeStoresApi.Controllers
 {
-    public class ProductController : BaseApiController
+    public class ProductController : BaseApiController<IProductService>
     {
-        private readonly IProductService _productService;
-
-        public ProductController(IProductService productService)
+        public ProductController(IServiceProvider provider) : base(provider)
         {
-            _productService = productService;
         }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> Get()
         {
-            return Ok(await _productService.GetProducts());
+            return Ok(await _service.GetProducts());
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<GetProductDto>>> GetById(long id)
         {
-            var response = await _productService.GetProductById(id);
+            var response = await _service.GetProductById(id);
             if (response.Data == null)
             {
                 return NotFound(response);
@@ -32,12 +29,12 @@ namespace BikeStoresApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<GetProductDto>>> AddCategory(AddProductDto newCategory)
         {
-            return Ok(await _productService.AddProduct(newCategory));
+            return Ok(await _service.AddProduct(newCategory));
         }
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceResponse<GetProductDto>>> UpdateCategory(UpdateProductDto updateCategory)
         {
-            var response = await _productService.UpdateProduct(updateCategory);
+            var response = await _service.UpdateProduct(updateCategory);
             if (response.Data == null)
             {
                 return NotFound(response);
@@ -47,7 +44,7 @@ namespace BikeStoresApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> DeleteCategory(long id)
         {
-            var response = await _productService.DeleteProduct(id);
+            var response = await _service.DeleteProduct(id);
             if (response.Data == null)
             {
                 return NotFound(response);

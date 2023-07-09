@@ -1,12 +1,10 @@
 ﻿using BikeStoresApi.Dtos;
 using BikeStoresApi.Models;
 using BikeStoresApi.Services.CategoryService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BikeStoresApi.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase

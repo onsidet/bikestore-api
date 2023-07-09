@@ -1,20 +1,13 @@
-﻿using AutoMapper;
-using BikeStoresApi.Data;
-using BikeStoresApi.Dtos;
+﻿using BikeStoresApi.Dtos;
 using BikeStoresApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BikeStoresApi.Services.ProductService
 {
-    public class ProductService : IProductService
+    public class ProductService : BaseApiService, IProductService
     {
-        private readonly IMapper _mapper;
-        private readonly DataContext _context;
-
-        public ProductService(IMapper mapper, DataContext context)
+        public ProductService(IServiceProvider provider) : base(provider)
         {
-            _mapper = mapper;
-            _context = context;
         }
 
         public async Task<ServiceResponse<List<GetProductDto>>> AddProduct(AddProductDto newProduct)
@@ -23,13 +16,13 @@ namespace BikeStoresApi.Services.ProductService
             try
             {
                 var product = _mapper.Map<Product>(newProduct);
-                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == product.CategoryId);
+                var category = await _db.Categories.FirstOrDefaultAsync(x => x.Id == product.CategoryId);
                 if (category == null)
                 {
                     throw new BadHttpRequestException($"Cannot find categoryId: {product.CategoryId}", 400);
                 }
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                _db.Products.Add(product);
+                await _db.SaveChangesAsync();
                 var lists = await GetProducts();
                 serviceResponse.Data = lists.Data;
             }
@@ -47,14 +40,14 @@ namespace BikeStoresApi.Services.ProductService
             try
             {
                 var product =
-                    await _context.Products.FirstOrDefaultAsync(c => c.Id == id);
+                    await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
                 if (product == null)
                 {
                     throw new Exception($"Category cannot find id : {id}");
                 }
-                _context.Products.Remove(product);
+                _db.Products.Remove(product);
 
-                await _context.SaveChangesAsync();
+                await _db.SaveChangesAsync();
                 var lists = await GetProducts();
                 serviceResponse.Data = lists.Data;
             }
@@ -69,8 +62,8 @@ namespace BikeStoresApi.Services.ProductService
         public async Task<ServiceResponse<List<GetProductDto>>> GetProducts()
         {
             var serviceResponse = new ServiceResponse<List<GetProductDto>>();
-            var dbProducts = await _context.Products.ToListAsync();
-            var categories = await _context.Categories.ToListAsync();
+            var dbProducts = await _db.Products.ToListAsync();
+            var categories = await _db.Categories.ToListAsync();
             serviceResponse.Data = dbProducts.Select(c => new GetProductDto
             {
                 Id = c.Id,
@@ -87,8 +80,8 @@ namespace BikeStoresApi.Services.ProductService
             var serviceResponse = new ServiceResponse<GetProductDto>();
             try
             {
-                var dbProduct = await _context.Products.FirstOrDefaultAsync(c => c.Id == id);
-                var categories = await _context.Categories.ToListAsync();
+                var dbProduct = await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
+                var categories = await _db.Categories.ToListAsync();
                 if (dbProduct == null)
                 {
                     throw new Exception($"Product cannot find id: {id}");
@@ -118,7 +111,7 @@ namespace BikeStoresApi.Services.ProductService
             try
             {
                 var product =
-                   await _context.Products.FirstOrDefaultAsync(c => c.Id == update.Id);
+                   await _db.Products.FirstOrDefaultAsync(c => c.Id == update.Id);
                 if (product == null)
                 {
                     throw new Exception($"Product cannot find id : {update.Id}");
@@ -129,7 +122,7 @@ namespace BikeStoresApi.Services.ProductService
                 product.ModelYear = update.ModelYear;
                 product.CategoryId = update.CategoryId;
 
-                await _context.SaveChangesAsync();
+                await _db.SaveChangesAsync();
 
                 serviceResponse.Data = _mapper.Map<GetProductDto>(product);
             }

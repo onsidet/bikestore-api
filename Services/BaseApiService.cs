@@ -1,23 +1,18 @@
 ﻿using AutoMapper;
 using BikeStoresApi.Data;
-using Microsoft.AspNetCore.Mvc;
 
-namespace BikeStoresApi.Controllers
+namespace BikeStoresApi.Services
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BaseApiController<TService> : ControllerBase where TService : class
+    public class BaseApiService
     {
         protected readonly IServiceProvider _provider;
         protected readonly DataContext _db;
-        protected readonly TService _service;
         protected readonly IMapper _mapper;
 
-        public BaseApiController(IServiceProvider provider)
+        public BaseApiService(IServiceProvider provider)
         {
             _provider = provider;
             _db = provider.GetService<DataContext>();
-            _service = provider.GetService<TService>();
             _mapper = provider.GetService<IMapper>();
         }
     }
